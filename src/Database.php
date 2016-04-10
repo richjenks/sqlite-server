@@ -1,9 +1,33 @@
 <?php namespace SQLiteServer;
 
 /**
- * Handles database interaction
+ * Handles database creation and management
  */
 class Database {
+
+	/**
+	 * Gets list of database names
+	 *
+	 * Excludes path and extension, just filenames
+	 *
+	 * @param string $path Path to databases directory
+	 * @return array List of database names
+	 */
+	public function get_databases($path) {
+		$files = scandir($path);
+
+		// Remove non-database files
+		foreach ($files as $key => $file)
+			if (!$this->validate_database($file) || substr($file, -3) !== '.db')
+				unset($files[$key]);
+
+		// Remove extension
+		foreach ($files as $key => $file) $files[$key] = substr($file, 0, -3);
+
+		// Return readable list
+		sort($files, SORT_NATURAL | SORT_FLAG_CASE);
+		return $files;
+	}
 
 	/**
 	 * Determines whether a given database name is valid

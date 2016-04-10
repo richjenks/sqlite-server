@@ -9,6 +9,15 @@ class DatabaseTest extends PHPUnit_Framework_TestCase {
 		Flight::set('dbs', dirname(dirname(__DIR__)) . '/databases/');
 	}
 
+	public function testGetDatabases() {
+		$this->assertEmpty(self::$db->get_databases(Flight::get('dbs')));
+		$databases = ['phpunit-test1', 'phpunit-test2', 'phpunit-test3'];
+		foreach ($databases as $database) self::$db->create_database($database);
+		$this->assertEquals(3, count(self::$db->get_databases(Flight::get('dbs'))));
+		$this->assertEquals($databases, self::$db->get_databases(Flight::get('dbs')));
+		foreach ($databases as $database) self::$db->drop_database($database);
+	}
+
 	public function testValidateDatabase() {
 		$this->assertTrue(self::$db->validate_database('valid'));
 		$this->assertTrue(self::$db->validate_database('Enterprise_Database'));
