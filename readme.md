@@ -2,30 +2,87 @@
 
 SQLite Server is a drop-in REST API for SQLite written in PHP
 
+_Requires PHP 5.5 with PDO extension_
+
+## Installation
+
+1. `git clone git@github.com:richjenks/sqlite-server.git`
+1. `composer install --no-dev`
+1. Make the `public` directory accessible via HTTP, e.g. `php -S localhost:8008 /path/to/public`
+
 ## Endpoints
 
-### `HEAD /`: Server test
+### Server test
 
-Will return the header `Welcome: SQLite Server v0.0.1` if successful.
+Checks the server is running.
 
-### `GET /`: List databases
+- Request
+	- URL: `HEAD /`
+- Response
+	- Status: `200`
+	- Header: `Welcome: SQLite Server v0.0.1`
+
+### List databases
 
 Returns an array of all available databases.
 
-### `HEAD /@database`: Check if database exists
+- Request
+	- URL: `GET /`
+- Response
+	- Status: `200`
+	- Body: `['database1', 'database2']`
 
-Status will be 200 if database exists and 404 if not.
+### Check database
 
-### `POST /@database`: Create database
+Checks whether a given database exists.
+
+- Request
+	- URL: `HEAD /:database`
+- Response
+	- Status: `200` if exists, `404` if not
+
+### Create database
 
 Database names must start with an alphanumeric character but may also contain hyphens, underscores and periods.
 
-### `DELETE /@database`: Delete database
+- Request
+	- URL: `POST /:database`
+- Response
+	- Status: `201` if succesful, `409` if already exists or name invalid
+	- Body: `Database 'database_name' created`
+
+### Rename database
+
+New database name should go in request body in plaintext.
+
+- Request
+	- URL: `PUT /:database`
+	- Body: `new_database_name`
+- Response
+	- Status: `201` if succesful, `409` if name invalid
+	- Body: `Database 'database_name' renamed to 'new_name'`
+
+### Delete database
 
 Be careful as there are no confirmations or checks before deleting a database.
 
+- Request
+	- URL: `DELETE /:database`
+- Response
+	- Status: `200` if succesful, `404` if database doesn't exist
+	- Body: `Database 'database_name' deleted`
+
 ## Unit Tests
 
-Test with `php vendor/phpunit/phpunit/phpunit tests/src --bootstrap vendor/autoload.php`
+1. `git clone git@github.com:richjenks/sqlite-server.git`
+1. `composer install`
+1. `php vendor/phpunit/phpunit/phpunit tests --bootstrap vendor/autoload.php`
 
-Replace `tests/src` with `tests/api http://localhost:8301/` to test the API
+## Todo
+
+- [x] Database CRUD
+- [ ] Table CRUD - how to differentiate between create table and create row?
+- [ ] SQL statement construction
+- [ ] SQL execution
+- [ ] HTTP Basic Auth...but where to store creds/permissions...?
+- [ ] Permissions: CRUD option at database-, table- and data-level
