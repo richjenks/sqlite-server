@@ -1,9 +1,24 @@
 <?php namespace SQLiteServer;
 
 /**
- * Handles database creation and management
+ * Basic database operations with no side-effects, e.g. output, status codes
  */
 class Database {
+
+	/**
+	 * @var object PDO connection
+	 */
+	private $pdo;
+
+	/**
+	 * Opens a database connection
+	 *
+	 * @param string $database Name of database to use
+	 */
+	private function use($database) {
+		$this->pdo = new \PDO('sqlite:' . $this->database_path($database));
+		$this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+	}
 
 	/**
 	 * Gets list of database names
@@ -28,6 +43,14 @@ class Database {
 		sort($files, SORT_NATURAL | SORT_FLAG_CASE);
 		return $files;
 	}
+
+	/**
+	 * Checks whether the given database exists
+	 *
+	 * @param string $name Database name
+	 * @return bool Whether the database exists
+	 */
+	public function database_exists($name) { return file_exists($this->database_path($name)); }
 
 	/**
 	 * Determines whether a given database name is valid
@@ -74,6 +97,27 @@ class Database {
 	 */
 	public function rename_database($name, $new) {
 		rename($this->database_path($name), $this->database_path($new));
+	}
+
+	/**
+	 * Gets list of table names in given database
+	 *
+	 * @param string $database Database name
+	 * @return array List of table names
+	 */
+	public function get_tables($database) {
+		$this->use($database);
+
+		// Get table names
+		$query  = $this->pdo->query("SELECT name FROM sqlite_master WHERE type='table';");
+		$rows = $query->fetchAll(\PDO::FETCH_ASSOC);
+
+		// Flatten results
+		foreach ($rows as $row) $tables[] = $row['name'];
+
+		// Return readable list
+		sort($tables, SORT_NATURAL | SORT_FLAG_CASE);
+		return $tables;
 	}
 
 }
