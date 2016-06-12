@@ -48,7 +48,7 @@ Database names must start with an alphanumeric character but may also contain hy
 - Request
 	- URL: `POST /:database`
 - Response
-	- Status: `201` if succesful, `409` if already exists or name invalid
+	- Status: `201` if successful, `409` if already exists or name invalid
 	- Body: `Database 'database_name' created`
 
 ### Rename database
@@ -59,7 +59,7 @@ New database name should go in request body in plaintext.
 	- URL: `PUT /:database`
 	- Body: `new_database_name`
 - Response
-	- Status: `201` if succesful, `409` if name invalid
+	- Status: `201` if successful, `409` if name invalid
 	- Body: `Database 'database_name' renamed to 'new_name'`
 
 ### Delete database
@@ -69,7 +69,7 @@ Be careful as there are no confirmations or checks before deleting a database.
 - Request
 	- URL: `DELETE /:database`
 - Response
-	- Status: `200` if succesful, `404` if database doesn't exist
+	- Status: `200` if successful, `404` if database doesn't exist
 	- Body: `Database 'database_name' deleted`
 
 ## Unit Tests
