@@ -80,9 +80,10 @@ Be careful as there are no confirmations or checks before deleting a database.
 
 ## Todo
 
-- [x] Database CRUD
+- [ ] Design endpoints
+- [ ] Database CRUD
 - [ ] Table CRUD - how to differentiate between create table and create row?
 - [ ] SQL statement construction
 - [ ] SQL execution
 - [ ] HTTP Basic Auth...but where to store creds/permissions...?
-- [ ] Permissions: CRUD option at database-, table- and data-level
+- [ ] Permissions: CRUD option at database-data-level
